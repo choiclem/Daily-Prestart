@@ -617,7 +617,7 @@ function buildForm(){
       r.innerHTML = '<div class="pn">Technician '+(i+1)+'</div>'+
         '<div class="row">'+
           '<div class="f"><label for="cn'+i+'">Printed name</label><input id="cn'+i+'" autocomplete="off" autocapitalize="words"></div>'+
-          '<div class="f"><label for="ct'+i+'">Time</label><input type="time" id="ct'+i+'"></div>'+
+          '<div class="f"><label for="ct'+i+'">Time signed</label><input type="time" id="ct'+i+'"></div>'+
         '</div>'+
         '<button type="button" class="sigbox" id="cs'+i+'" aria-label="Technician '+(i+1)+' signature">Tap to sign</button>';
       crew.appendChild(r);
@@ -816,9 +816,10 @@ $('sigSave').addEventListener('click', () => {
   const saveCtx = ctx; ctx = g; strokes.forEach(drawStroke); ctx = saveCtx;
   const i = sigRow;
   S.crew[i].signature = c.toDataURL('image/png');
-  if(!(S.crew[i].time||'').trim()){ S.crew[i].time = nowHHMM(); $('ct'+i).value = S.crew[i].time; }
+  // Signing stamps the current time; it can still be changed afterwards
+  S.crew[i].time = nowHHMM(); $('ct'+i).value = S.crew[i].time;
   save(); paintSig(i); closeSig(); refresh();
-  toast('Signature saved');
+  toast('Signed at '+hhmmTo12(S.crew[i].time)+'. Change the time if needed.');
 });
 
 // ---------- PDF ----------
