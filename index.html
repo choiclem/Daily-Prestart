@@ -228,7 +228,7 @@ section.sec{background:var(--surface);border-top:1px solid var(--line);border-bo
       <div class="sec-body">
         <p class="ack">By signing, each person confirms participation in this prestart, understanding of today's work and controls, and the requirement to report hazards, incidents and near misses.</p>
         <div class="crew" id="crew"></div>
-        <button class="btn btn-ghost btn-block addcrew" id="btnAddCrew" type="button">+ Add crew member</button>
+        <button class="btn btn-ghost btn-block addcrew" id="btnAddCrew" type="button">+ Add technician</button>
       </div>
     </section>
 
@@ -509,6 +509,7 @@ const CHECKS = [
   ['Other Hazards','Hazardous substances, manual handling and environmental risks are controlled'],
 ];
 const CREW_ROWS = 6;
+const JOB_PREFIX = 'PRO-00';
 const KEY_DRAFT = 'argus-prestart-draft-v2';        // sessionStorage: survives a reload of this tab only
 const KEY_CONTACTS = 'argus-prestart-contacts-v1';   // localStorage: people added to the email list
 const DEFAULT_CONTACTS = [
@@ -542,7 +543,7 @@ function longDate(iso){
 // ---------- state ----------
 function blankState(name){
   return {
-    date: todayISO(), jobNo:'', siteName:'', startTime: nowHHMM(), leadingHand: name||'', client:'', workPlanned:'',
+    date: todayISO(), jobNo: JOB_PREFIX, siteName:'', startTime: nowHHMM(), leadingHand: name||'', client:'', workPlanned:'',
     checks: Array(CHECKS.length).fill(null), comments: Array(CHECKS.length).fill(''), changed:null, newHazards:'', controls:'', to:'',
     crew: Array.from({length:CREW_ROWS}, (_,i) => ({ name: i===0 ? (name||'') : '', signature:null, time:'' })),
     crewCount: 3
@@ -613,18 +614,19 @@ function buildForm(){
     for(let i=0;i<CREW_ROWS;i++){
       const r = document.createElement('div');
       r.className = 'person'; r.id = 'crow'+i;
-      r.innerHTML = '<div class="pn">Crew '+(i+1)+'</div>'+
+      r.innerHTML = '<div class="pn">Technician '+(i+1)+'</div>'+
         '<div class="row">'+
           '<div class="f"><label for="cn'+i+'">Printed name</label><input id="cn'+i+'" autocomplete="off" autocapitalize="words"></div>'+
           '<div class="f"><label for="ct'+i+'">Time</label><input type="time" id="ct'+i+'"></div>'+
         '</div>'+
-        '<button type="button" class="sigbox" id="cs'+i+'" aria-label="Crew '+(i+1)+' signature">Tap to sign</button>';
+        '<button type="button" class="sigbox" id="cs'+i+'" aria-label="Technician '+(i+1)+' signature">Tap to sign</button>';
       crew.appendChild(r);
       $('cn'+i).addEventListener('input', e => { S.crew[i].name = e.target.value; save(); refresh(); });
       $('ct'+i).addEventListener('input', e => { S.crew[i].time = e.target.value; save(); });
       $('ct'+i).addEventListener('change', e => { S.crew[i].time = e.target.value; save(); });
       $('cs'+i).addEventListener('click', () => openSig(i));
     }
+    $('f_job').addEventListener('focus', e => { const el = e.target; setTimeout(() => { try{ el.setSelectionRange(el.value.length, el.value.length); }catch(_){} }, 0); });
     $('btnAddCrew').addEventListener('click', () => {
       if(S.crewCount >= CREW_ROWS) return;
       S.crewCount++; save(); refresh();
@@ -664,6 +666,7 @@ function problems(){
   const p = [];
   const need = [['date','f_date','Date'],['siteName','f_site','Site name'],['jobNo','f_job','Job no.'],['leadingHand','f_lead','Leading hand']];
   need.forEach(([k,id,l]) => { if(!String(S[k]||'').trim()) p.push({id, msg: l+' is empty'}); });
+  if(String(S.jobNo||'').trim().toUpperCase() === JOB_PREFIX) p.push({id:'f_job', msg:'Finish the job no. (still '+JOB_PREFIX+')'});
   S.checks.forEach((v,i) => { if(!v) p.push({id:'chk'+i, msg:'Check '+(i+1)+' not answered'}); });
   if(!S.changed) p.push({id:'qChanged', msg:'Section 3 not answered'});
   if(S.changed==='yes'){
@@ -677,7 +680,7 @@ function problems(){
     if(hasName && !c.signature) p.push({id:'cs'+i, msg:(c.name.trim())+' has not signed'});
     if(!hasName && c.signature) p.push({id:'cn'+i, msg:'Signature '+(i+1)+' has no printed name'});
   });
-  if(signed===0 && !p.some(x=>x.id.startsWith('cs'))) p.push({id:'cs0', msg:'At least one crew signature is needed'});
+  if(signed===0 && !p.some(x=>x.id.startsWith('cs'))) p.push({id:'cs0', msg:'At least one technician signature is needed'});
   return p;
 }
 
@@ -840,7 +843,7 @@ function fileName(){
 function renderTo(){
   const sel = $('f_to'); sel.innerHTML = '';
   const add = (v, t, dis) => { const o = document.createElement('option'); o.value = v; o.textContent = t; if(dis) o.disabled = true; sel.appendChild(o); return o; };
-  add('', 'Choose who to send to');
+  add('', 'No one (choose in email app)');
   allContacts().forEach(c => add(c.email, c.name));
   add('__add', '+ Add new person…');
   const known = allContacts().some(c => c.email === S.to);
@@ -908,7 +911,7 @@ function mailBits(){
   const flagged = S.checks.map((v,i) => (v==='no'||v==='na') ? '- '+CHECKS[i][0]+': '+(v==='no'?'NO':'N/A')+(S.comments[i]&&S.comments[i].trim() ? ' ('+S.comments[i].trim()+')' : '') : null).filter(Boolean);
   const body = 'Hi'+(person ? ' '+person.name.split(' ')[0] : '')+',\n\nPlease find attached the daily site prestart.\n\n'+
     'Site: '+S.siteName+'\nJob no.: '+S.jobNo+'\nDate: '+isoToNZ(S.date)+'\nLeading hand: '+S.leadingHand+'\n'+
-    'Crew signed: '+names.join(', ')+'\n'+
+    'Technicians signed: '+names.join(', ')+'\n'+
     (flagged.length ? '\nChecks answered NO or N/A:\n'+flagged.join('\n')+'\n' : '')+
     (S.changed==='yes' ? 'Changes since SSSP/JSA: '+S.newHazards+'\nControls: '+S.controls+'\n' : '')+
     '\nThanks,\n'+S.leadingHand;
@@ -932,8 +935,7 @@ $('btnPdf').addEventListener('click', () => {
 
 $('btnEmail').addEventListener('click', () => {
   if(!checkReady()) return;
-  if(!S.to){ $('f_to').scrollIntoView({block:'center'}); $('f_to').focus({preventScroll:true}); $('f_to').classList.add('bad'); toast('Choose who to send to'); return; }
-  const to = S.to;
+  const to = S.to || '';   // optional: with no one picked, the email opens with an empty To
   withBusy($('btnEmail'), 'Making PDF…', async () => {
     const bytes = await buildPdf();
     const name = fileName();
@@ -943,7 +945,7 @@ $('btnEmail').addEventListener('click', () => {
     try{ file = new File([bytes], name, {type:'application/pdf'}); }catch(e){}
     if(file && navigator.canShare && navigator.canShare({files:[file]})){
       try{
-        await navigator.share({ files:[file], title: subject, text: 'To: '+to+'\n\n' + body });
+        await navigator.share({ files:[file], title: subject, text: body });
         toast('Shared'); return;
       }catch(err){
         if(err && err.name==='AbortError') return; // user closed the sheet
@@ -953,11 +955,11 @@ $('btnEmail').addEventListener('click', () => {
     // 2) Everywhere else: save the PDF, then open a pre-filled email to attach it to
     const ok = await savePdfFile(bytes, name);
     if(!ok) return;
-    const href = 'mailto:'+encodeURIComponent(to).replace(/%2C/gi,',').replace(/%40/g,'@')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    const href = 'mailto:'+(to ? encodeURIComponent(to).replace(/%40/g,'@') : '')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
     openHandoff({
       title:'Attach the PDF to your email',
-      msg:'Saved <b>'+escapeHtml(name)+'</b> for <b>'+escapeHtml(to)+'</b>.',
-      help:'Your email app opens with the address, subject and message filled in. Attach the saved PDF before sending.',
+      msg:'Saved <b>'+escapeHtml(name)+'</b>'+(to ? ' for <b>'+escapeHtml(to)+'</b>.' : '. Add the recipient in your email app.'),
+      help:'Your email app opens with the subject and message filled in. Attach the saved PDF before sending.',
       href, linkText:'Open email'
     });
   });
