@@ -9,156 +9,151 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
-html{color-scheme:light}
 :root{
-  --orange:#F58220; --orange-ink:#B85A0C; --charcoal:#2E2E2E;
-  --bg:#F7F7F5; --surface:#FFFFFF; --panel:#F2F2F2; --line:#D4D4D1;
+  --orange:#F58220; --charcoal:#2E2E2E;
+  --bg:#F3F3F1; --surface:#FFFFFF; --panel:#F5F5F4; --line:#D9D9D6;
   --text:#1F1F1F; --muted:#5E5E5B; --pen:#0D1F73; --stop:#C62828; --stop-bg:#FDECEC;
-  --ok-bg:#E9ECF7; --focus:#0D1F73;
+  --focus:#0D1F73;
   --font:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --cond:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
+html{color-scheme:light;-webkit-text-size-adjust:100%;scroll-padding-top:12px}
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
-body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.45 var(--font);-webkit-text-size-adjust:100%}
-button,input,textarea{font:inherit;color:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.45 var(--font);overflow-x:hidden}
+button,input,textarea,select{font:inherit;color:inherit;margin:0}
+button{-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .hidden{display:none!important}
 
-/* ---------- Landing ---------- */
-#landing{min-height:100vh;min-height:100svh;display:grid;place-items:center;padding:24px 18px}
-.land{width:100%;max-width:420px}
-.land .band{height:10px;background:var(--orange);margin-bottom:28px}
-.land h1{font:700 44px/1 var(--cond);letter-spacing:-.01em;margin:0 0 6px}
-.land .sub{color:var(--muted);margin:0 0 30px}
-.land .today{border-top:1px solid var(--line);padding:16px 0 0;margin-bottom:18px}
-.land .today small{display:block;color:var(--muted);font-size:14px;margin-top:4px}
-.land label{display:block;font-weight:600;margin-bottom:6px}
-.land input{width:100%;min-height:54px;font-size:20px;padding:14px 14px;border:2px solid var(--line);background:var(--surface);border-radius:6px}
-.land input:focus{border-color:var(--orange);outline:none}
-.land .err{color:var(--stop);font-size:14px;min-height:20px;margin:6px 0 10px}
-.btn{appearance:none;border:0;border-radius:6px;padding:14px 18px;font-weight:600;font-size:17px;cursor:pointer;min-height:50px}
-.btn-primary{background:var(--orange);color:#1a1a1a}
-.btn-primary:hover{filter:brightness(1.05)}
-.btn-dark{background:var(--charcoal);color:#fff}
-.btn-ghost{background:transparent;border:2px solid var(--line)}
-.btn-block{width:100%}
-.btn-wa{background:#1FA855;color:#fff}
-.btn-wa:hover{filter:brightness(1.05)}
+/* Form controls (16px+ so iOS doesn't zoom on focus) */
+.f{min-width:0}
+.f label{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.f input,.f textarea,.f select{display:block;width:100%;min-width:0;min-height:48px;padding:11px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--panel);font-size:17px;color:var(--pen)}
+.f textarea{min-height:88px;resize:vertical;line-height:1.35}
+.f input:focus,.f textarea:focus,.f select:focus{border-color:var(--orange);background:var(--surface);outline:none}
+.f input::placeholder,.f textarea::placeholder{color:#9A9A96}
+.f select{-webkit-appearance:none;appearance:none;padding-right:40px;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%235E5E5B' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center}
+.f .hint{font-size:13px;color:var(--muted);margin-top:5px}
+/* iOS Safari: stop date/time inputs overflowing and centring their text */
+@supports (-webkit-touch-callout:none){
+  input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;text-align:left}
+}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left}
+.bad input,.bad textarea,.bad select,select.bad{border-color:var(--stop)!important}
+.warn-chars{font-size:13px;color:var(--stop);margin-top:5px}
 
-/* ---------- Form ---------- */
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--charcoal);color:#fff;border-bottom:4px solid var(--orange)}
-header.top .in{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
-header.top h2{font:700 22px/1.1 var(--cond);margin:0;flex:1}
-header.top h2 small{display:block;font:400 13px/1.3 var(--font);color:#CFCFCF}
-header.top .btn{min-height:40px;padding:8px 12px;font-size:14px;background:transparent;color:#fff;border:1px solid #6b6b6b}
-main{max-width:760px;margin:0 auto;padding:14px 12px 150px}
-section.sec{background:var(--surface);margin:0 0 14px;border:1px solid var(--line)}
-.sec-head{background:var(--orange);color:#1a1a1a;padding:7px 14px;display:flex;align-items:baseline;gap:10px}
+.btn{appearance:none;-webkit-appearance:none;border:0;border-radius:6px;padding:13px 16px;font-weight:600;font-size:17px;cursor:pointer;min-height:52px;display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;line-height:1.2}
+.btn-primary{background:var(--orange);color:#1a1a1a}
+.btn-dark{background:var(--charcoal);color:#fff}
+.btn-ghost{background:var(--surface);border:1.5px solid var(--line);color:var(--text)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.6}
+.linkbtn{background:none;border:0;padding:6px 0;color:var(--stop);font-weight:600;font-size:15px;cursor:pointer;text-decoration:underline}
+
+/* ---------- Landing ---------- */
+#landing{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:28px 20px}
+.land{width:100%;max-width:420px}
+.land .band{height:8px;background:var(--orange);margin-bottom:26px;width:64px}
+.land h1{font:700 40px/1.02 var(--cond);margin:0 0 8px}
+.land .sub{color:var(--muted);margin:0 0 28px}
+.land .f{margin-bottom:18px}
+.land .f input{background:var(--surface)}
+.land .datelong{font-size:14px;color:var(--muted);margin-top:5px}
+.land .err{color:var(--stop);font-size:14px;min-height:20px;margin:-8px 0 10px}
+
+/* ---------- Header (not sticky) ---------- */
+header.top{background:var(--charcoal);color:#fff;border-bottom:4px solid var(--orange)}
+header.top .in{max-width:680px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+header.top h2{font:700 21px/1.1 var(--cond);margin:0;flex:1;min-width:0}
+header.top h2 small{display:block;font:400 14px/1.35 var(--font);color:#CFCFCF;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+header.top .btn{min-height:40px;padding:8px 12px;font-size:14px;background:transparent;color:#fff;border:1.5px solid #6b6b6b;flex:none}
+
+/* ---------- Sections: full-bleed on phones, cards on wide screens ---------- */
+main{max-width:680px;margin:0 auto;padding:0 0 28px}
+section.sec{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:10px 0}
+.sec-head{background:var(--orange);color:#1a1a1a;padding:9px 16px;display:flex;align-items:baseline;gap:8px}
 .sec-head h3{font:700 19px/1.2 var(--cond);margin:0;flex:1}
 .sec-head .n{font:700 19px/1.2 var(--cond)}
-.sec-head .state{font-size:13px;font-weight:600}
-.sec-body{padding:14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
-@media (max-width:560px){.grid{grid-template-columns:1fr}}
-.f label{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:4px}
-.f input,.f textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:5px;background:var(--panel);font-size:17px;color:var(--pen)}
-.f textarea{min-height:76px;resize:vertical}
-.f input:focus,.f textarea:focus{border-color:var(--orange);background:var(--surface);outline:none}
-.f .hint{font-size:13px;color:var(--muted);margin-top:4px}
-.f.wide{grid-column:1/-1}
-.bad input,.bad textarea,input.bad,select.bad{border-color:var(--stop)!important}
-.warn-chars{font-size:13px;color:var(--stop);margin-top:4px}
-
-/* checks */
-.chk{display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
-.chk:first-child{border-top:0}
-.chk p{margin:0;font-size:15.5px}
-.chk p b{font-weight:700}
-.chk.bad{background:var(--stop-bg)}
-.seg{display:flex;border:1.5px solid var(--line);border-radius:6px;overflow:hidden}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label{min-width:58px;min-height:46px;display:grid;place-items:center;font-weight:700;font-size:15px;cursor:pointer;background:var(--panel);border-left:1.5px solid var(--line);user-select:none}
-.seg label:first-of-type{border-left:0}
-.seg input:focus-visible+label{outline:3px solid var(--focus);outline-offset:-3px}
-.seg input[value=yes]:checked+label{background:var(--pen);color:var(--surface)}
-.seg input[value=no]:checked+label{background:var(--stop);color:#fff}
-.seg input[value=na]:checked+label{background:var(--muted);color:var(--surface)}
-.chk .cmt{grid-column:1/-1}
-.chk .cmt label{display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:var(--muted)}
-.chk.is-no .cmt label{color:var(--stop)}
-.chk .cmt textarea{width:100%;min-height:62px;padding:10px 12px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);font-size:16px;color:var(--pen);resize:vertical}
-.chk .cmt textarea:focus{border-color:var(--orange);outline:none}
-.chk .cmt .hint{font-size:13px;color:var(--muted);margin-top:3px}
-@media (max-width:560px){.chk{grid-template-columns:1fr}.seg label{flex:1}}
-
-.stopline{background:var(--stop-bg);color:var(--stop);font-weight:600;font-size:14px;padding:10px 14px;border-left:4px solid var(--stop);margin-top:14px}
-.q{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:12px}
-.q p{margin:0;font-weight:600;flex:1 1 260px}
-
-/* crew */
-.ack{font-size:14px;color:var(--muted);margin:0 0 12px}
-.crew{display:grid;gap:10px}
-.crow{display:grid;grid-template-columns:28px 1fr 1.25fr 130px;gap:8px;align-items:center}
-.crow .idx{font:700 18px var(--cond);color:var(--muted);text-align:center}
-.crow input{width:100%;padding:10px 10px;border:1.5px solid var(--line);border-radius:5px;background:var(--panel);font-size:16px;color:var(--pen);min-height:52px}
-.crow input:focus{border-color:var(--orange);background:var(--surface);outline:none}
-.sigbox{min-height:52px;border:1.5px dashed var(--line);border-radius:5px;background:#fff;cursor:pointer;display:grid;place-items:center;padding:3px;color:#6b6b6b;font-size:14px;font-weight:600;width:100%}
-.sigbox:hover{border-color:var(--orange)}
-.sigbox.signed{border-style:solid}
-.sigbox img{max-height:44px;max-width:100%;display:block}
-.sigbox.bad{border-color:var(--stop)}
-.crew-head{display:grid;grid-template-columns:28px 1fr 1.25fr 130px;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
-@media (max-width:560px){
-  .crew-head{display:none}
-  .crow{grid-template-columns:24px 1fr 124px;grid-template-areas:"i n t" "i s s";padding:10px 0;border-top:1px solid var(--line)}
-  .crow:first-child{border-top:0}
-  .crow .idx{grid-area:i;align-self:start;padding-top:14px}
-  .crow .nm{grid-area:n}.crow .tm{grid-area:t}.crow .sigbox{grid-area:s}
+.sec-head .state{font-size:13px;font-weight:600;white-space:nowrap}
+.sec-body{padding:16px}
+.fields{display:grid;gap:14px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:700px){
+  main{padding:8px 16px 32px}
+  section.sec{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
 }
 
-/* send */
-.send .row{display:flex;gap:10px;flex-wrap:wrap}
-.send .row .f{flex:1 1 260px}
+/* Prestart checks */
+.chk{padding:14px 16px;border-top:1px solid var(--line)}
+.chk:first-child{border-top:0}
+.chk .t{margin:0;font-weight:700;font-size:16.5px}
+.chk .d{margin:2px 0 0;font-size:15px;color:#3E3E3C}
+.chk.bad{background:var(--stop-bg)}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:7px;overflow:hidden;margin-top:10px;background:var(--panel)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15.5px;cursor:pointer;border-left:1.5px solid var(--line);user-select:none;-webkit-user-select:none}
+.seg label:first-of-type{border-left:0}
+.seg input:focus-visible+label{outline:3px solid var(--focus);outline-offset:-3px}
+.seg input[value=yes]:checked+label{background:var(--pen);color:#fff}
+.seg input[value=no]:checked+label{background:var(--stop);color:#fff}
+.seg input[value=na]:checked+label{background:var(--muted);color:#fff}
+.cmt{margin-top:12px}
+.chk.is-no .cmt label{color:var(--stop)}
+.cmt textarea{min-height:72px;background:var(--surface)}
 
-select.sel{width:100%;padding:11px 40px 11px 12px;border:1.5px solid var(--line);border-radius:5px;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%235E5E5B' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center;font-size:17px;color:var(--pen);appearance:none;-webkit-appearance:none;min-height:50px}
-select.sel:focus{border-color:var(--orange);outline:none}
-.to-row{display:flex;gap:8px;align-items:stretch}
-.to-row select{flex:1}
-.to-row .btn{min-height:50px;padding:8px 14px;font-size:15px;white-space:nowrap}
+/* Section 3 */
+.q p{margin:0;font-weight:600}
+.q .seg{max-width:320px}
+#changeFields{margin-top:14px}
+.stopline{background:var(--stop-bg);color:var(--stop);font-weight:600;font-size:14px;padding:10px 12px;border-left:4px solid var(--stop);margin-top:16px}
+
+/* Crew */
+.ack{font-size:14px;color:var(--muted);margin:0 0 14px}
+.crew{display:grid;gap:12px}
+.person{border:1.5px solid var(--line);border-radius:8px;padding:12px}
+.person .pn{font:700 16px/1 var(--cond);color:var(--muted);margin-bottom:8px}
+.person .row{display:grid;grid-template-columns:minmax(0,1fr) 148px;gap:10px}
+@media (max-width:359px){.person .row{grid-template-columns:1fr}}
+.sigbox{display:flex;align-items:center;justify-content:center;width:100%;min-height:68px;margin-top:10px;border:1.5px dashed #BDBDB9;border-radius:6px;background:#fff;cursor:pointer;padding:4px;color:#6b6b6b;font-size:15px;font-weight:600}
+.sigbox.signed{border-style:solid;border-color:var(--line)}
+.sigbox img{max-height:58px;max-width:100%;display:block}
+.sigbox.bad{border-color:var(--stop);background:var(--stop-bg)}
+.addcrew{margin-top:12px}
+
+/* Send + finish */
 .to-picked{font-size:14px;color:var(--muted);margin-top:6px}
-.sheet .body .f{margin-bottom:12px}
-.sheet .err{color:var(--stop);font-size:14px;min-height:18px}
+.summary{margin:0 0 12px;font-size:15px}
+.summary .ok{color:var(--pen);font-weight:700}
+.summary .no{color:var(--stop);font-weight:700}
+.issues{margin:0 0 14px;padding:12px 12px 12px 14px;background:var(--stop-bg);border-left:4px solid var(--stop);border-radius:4px}
+.issues p{margin:0 0 6px;font-weight:700;color:var(--stop)}
+.issues ul{margin:0;padding-left:18px}
+.issues li{margin:2px 0}
+.issues button{background:none;border:0;padding:4px 0;color:var(--stop);font-size:15px;text-align:left;cursor:pointer;text-decoration:underline}
+.actions{display:grid;gap:10px}
 
-/* bottom bar */
-.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom,0px)}
-.bar .in{max-width:760px;margin:0 auto;padding:10px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.bar .prog{flex:1 1 200px;font-size:14px;color:var(--muted)}
-.bar .prog b{color:var(--text)}
-.bar .prog .errs{color:var(--stop);font-weight:600;display:block}
-.bar .btns{display:flex;gap:8px;flex:1 1 300px}
-.bar .btns .btn{flex:1;padding-left:10px;padding-right:10px}
-@media (max-width:420px){.bar .btns .btn{font-size:15px}}
-
-/* modal */
-.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:14px}
-.sheet{background:var(--surface);width:100%;max-width:640px;border-radius:8px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-.sheet .hd{padding:14px 16px 6px}
+/* Modals: bottom sheet on phones */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:640px;border-radius:14px 14px 0 0;overflow:auto;max-height:100%;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@media (min-width:700px){.modal{align-items:center;padding:16px}.sheet{border-radius:10px;padding-bottom:0}}
+.sheet .hd{padding:16px 16px 4px}
 .sheet .hd h4{margin:0;font:700 22px/1.1 var(--cond)}
 .sheet .hd p{margin:4px 0 0;color:var(--muted);font-size:14px}
-.pad-wrap{position:relative;margin:10px 16px;border:1.5px solid var(--line);border-radius:6px;background:#fff;touch-action:none}
+.sheet .body{padding:8px 16px 4px}
+.sheet .body p{margin:0 0 10px}
+.sheet .body .f{margin-bottom:12px}
+.sheet .err{color:var(--stop);font-size:14px;min-height:18px}
+.sheet .ft{display:flex;gap:8px;padding:8px 16px 16px}
+.sheet .ft .btn{flex:1}
+.pad-wrap{position:relative;margin:10px 16px;border:1.5px solid var(--line);border-radius:8px;background:#fff;touch-action:none;overflow:hidden}
 .pad-wrap canvas{display:block;width:100%;touch-action:none;cursor:crosshair}
 .pad-wrap .base{position:absolute;left:6%;right:6%;bottom:26%;border-bottom:1.5px solid #c9c9c9;pointer-events:none}
 .pad-wrap .x{position:absolute;left:3%;bottom:27%;color:#9a9a9a;font-weight:700;pointer-events:none}
-.sheet .ft{display:flex;gap:8px;padding:8px 16px 16px;flex-wrap:wrap}
-.sheet .ft .btn{flex:1}
-.sheet .body{padding:4px 16px 8px}
-.sheet .body p{margin:0 0 10px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(110px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--charcoal);color:#fff;padding:10px 16px;border-radius:6px;font-weight:600;max-width:90vw}
-@media (prefers-reduced-motion:no-preference){.toast{animation:pop .18s ease-out}@keyframes pop{from{opacity:0;transform:translate(-50%,8px)}}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));z-index:60;background:var(--charcoal);color:#fff;padding:11px 16px;border-radius:8px;font-weight:600;width:max-content;max-width:calc(100vw - 32px);text-align:center}
+@media (prefers-reduced-motion:no-preference){.toast{animation:pop .18s ease-out}@keyframes pop{from{opacity:0;transform:translate(-50%,-8px)}}}
 </style>
 </head>
 <body>
@@ -170,9 +165,9 @@ select.sel:focus{border-color:var(--orange);outline:none}
     <h1>Daily site prestart</h1>
     <p class="sub">Argus Fire Systems. Fill it in, sign on screen, send the PDF.</p>
     <form id="landForm" autocomplete="off" novalidate>
-      <div class="today f"><label for="landDate">Date</label><input id="landDate" type="date"><small id="landDateLong"></small></div>
-      <label for="landName">Your name (leading hand)</label>
-      <input id="landName" name="name" autocomplete="name" placeholder="First and last name" required>
+      <div class="f"><label for="landDate">Date</label><input id="landDate" type="date"><div class="datelong" id="landDateLong"></div></div>
+      <div class="f"><label for="landName">Your name (leading hand)</label>
+        <input id="landName" name="name" autocomplete="name" autocapitalize="words" placeholder="First and last name" required></div>
       <div class="err" id="landErr"></div>
       <button class="btn btn-primary btn-block" type="submit">Start prestart</button>
     </form>
@@ -183,20 +178,24 @@ select.sel:focus{border-color:var(--orange);outline:none}
 <div id="app" class="hidden">
   <header class="top"><div class="in">
     <h2>Daily site prestart<small id="hdrSub"></small></h2>
-    <button class="btn" id="btnNew" type="button">New prestart</button>
+    <button class="btn" id="btnNew" type="button">New</button>
   </div></header>
 
   <main>
     <section class="sec" id="sec1">
       <div class="sec-head"><span class="n">1</span><h3>Job and daily work details</h3></div>
-      <div class="sec-body grid">
-        <div class="f"><label for="f_date">Date</label><input id="f_date" type="date" data-k="date"></div>
-        <div class="f"><label for="f_site">Site name</label><input id="f_site" data-k="siteName" autocomplete="off"></div>
-        <div class="f"><label for="f_job">Job no.</label><input id="f_job" data-k="jobNo" autocomplete="off"></div>
-        <div class="f"><label for="f_start">Start time</label><input id="f_start" type="time" data-k="startTime"></div>
-        <div class="f"><label for="f_lead">Leading hand</label><input id="f_lead" data-k="leadingHand" autocomplete="name"></div>
-        <div class="f"><label for="f_client">Client / contractor</label><input id="f_client" data-k="client" autocomplete="off"></div>
-        <div class="f wide"><label for="f_work">Work planned today</label><textarea id="f_work" data-k="workPlanned" maxlength="400"></textarea>
+      <div class="sec-body fields">
+        <div class="pair">
+          <div class="f"><label for="f_date">Date</label><input id="f_date" type="date" data-k="date"></div>
+          <div class="f"><label for="f_start">Start time</label><input id="f_start" type="time" data-k="startTime"></div>
+        </div>
+        <div class="f"><label for="f_site">Site name</label><input id="f_site" data-k="siteName" autocomplete="off" autocapitalize="words"></div>
+        <div class="pair">
+          <div class="f"><label for="f_job">Job no.</label><input id="f_job" data-k="jobNo" autocomplete="off" autocapitalize="characters"></div>
+          <div class="f"><label for="f_lead">Leading hand</label><input id="f_lead" data-k="leadingHand" autocomplete="off" autocapitalize="words"></div>
+        </div>
+        <div class="f"><label for="f_client">Client / contractor</label><input id="f_client" data-k="client" autocomplete="off" autocapitalize="words"></div>
+        <div class="f"><label for="f_work">Work planned today</label><textarea id="f_work" data-k="workPlanned" maxlength="400" autocapitalize="sentences"></textarea>
           <div class="hint">About two lines fit on the printed form. Longer text is shrunk to fit.</div></div>
       </div>
     </section>
@@ -216,9 +215,9 @@ select.sel:focus{border-color:var(--orange);outline:none}
             <input type="radio" name="changed" id="ch_yes" value="yes"><label for="ch_yes">Yes</label>
           </div>
         </div>
-        <div id="changeFields" class="grid hidden">
-          <div class="f wide"><label for="f_haz">New hazards or changes</label><input id="f_haz" data-k="newHazards"></div>
-          <div class="f wide"><label for="f_ctrl">Controls / person responsible</label><input id="f_ctrl" data-k="controls"></div>
+        <div id="changeFields" class="fields hidden">
+          <div class="f"><label for="f_haz">New hazards or changes</label><textarea id="f_haz" data-k="newHazards" maxlength="200" autocapitalize="sentences"></textarea></div>
+          <div class="f"><label for="f_ctrl">Controls / person responsible</label><textarea id="f_ctrl" data-k="controls" maxlength="200" autocapitalize="sentences"></textarea></div>
         </div>
         <div class="stopline">Stop work if conditions change or controls are not effective. Update the risk assessment before restarting.</div>
       </div>
@@ -228,33 +227,33 @@ select.sel:focus{border-color:var(--orange);outline:none}
       <div class="sec-head"><span class="n">4</span><h3>Crew acknowledgement</h3><span class="state" id="crewState"></span></div>
       <div class="sec-body">
         <p class="ack">By signing, each person confirms participation in this prestart, understanding of today's work and controls, and the requirement to report hazards, incidents and near misses.</p>
-        <div class="crew-head"><span></span><span>Printed name</span><span>Signature</span><span>Time</span></div>
         <div class="crew" id="crew"></div>
+        <button class="btn btn-ghost btn-block addcrew" id="btnAddCrew" type="button">+ Add crew member</button>
       </div>
     </section>
 
-    <section class="sec send" id="sec5">
+    <section class="sec" id="sec5">
       <div class="sec-head"><h3>Send</h3></div>
       <div class="sec-body">
-        <div class="f"><label for="f_to">Email the PDF to</label>
-          <div class="to-row">
-            <select id="f_to" class="sel"></select>
-            <button class="btn btn-ghost hidden" id="btnRemoveTo" type="button">Remove</button>
-          </div>
+        <div class="f"><label for="f_to">Send to</label>
+          <select id="f_to" class="sel"></select>
           <div class="to-picked" id="toPicked"></div>
+          <button class="linkbtn hidden" id="btnRemoveTo" type="button">Remove this person from the list</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="finish">
+      <div class="sec-body">
+        <div class="summary" id="summary"></div>
+        <div class="issues hidden" id="issues"></div>
+        <div class="actions">
+          <button class="btn btn-primary btn-block" id="btnEmail" type="button">Email PDF</button>
+          <button class="btn btn-ghost btn-block" id="btnPdf" type="button">Save PDF</button>
         </div>
       </div>
     </section>
   </main>
-
-  <div class="bar"><div class="in">
-    <div class="prog" id="prog"></div>
-    <div class="btns">
-      <button class="btn btn-ghost" id="btnPdf" type="button">Save PDF</button>
-      <button class="btn btn-primary" id="btnEmail" type="button">Email PDF</button>
-      <button class="btn btn-wa" id="btnWa" type="button">WhatsApp</button>
-    </div>
-  </div></div>
 </div>
 
 <!-- Signature modal -->
@@ -265,7 +264,7 @@ select.sel:focus{border-color:var(--orange);outline:none}
     <div class="ft">
       <button class="btn btn-ghost" id="sigClear" type="button">Clear</button>
       <button class="btn btn-ghost" id="sigCancel" type="button">Cancel</button>
-      <button class="btn btn-dark" id="sigSave" type="button">Save signature</button>
+      <button class="btn btn-dark" id="sigSave" type="button">Save</button>
     </div>
   </div>
 </div>
@@ -545,7 +544,8 @@ function blankState(name){
   return {
     date: todayISO(), jobNo:'', siteName:'', startTime: nowHHMM(), leadingHand: name||'', client:'', workPlanned:'',
     checks: Array(CHECKS.length).fill(null), comments: Array(CHECKS.length).fill(''), changed:null, newHazards:'', controls:'', to:'',
-    crew: Array.from({length:CREW_ROWS}, (_,i) => ({ name: i===0 ? (name||'') : '', signature:null, time:'' }))
+    crew: Array.from({length:CREW_ROWS}, (_,i) => ({ name: i===0 ? (name||'') : '', signature:null, time:'' })),
+    crewCount: 3
   };
 }
 let S = null;
@@ -581,6 +581,7 @@ function boot(){
   if(draft && draft.crew && draft.checks){
     S = Object.assign(blankState(''), draft);
     if(!Array.isArray(S.comments)) S.comments = Array(CHECKS.length).fill('');
+    if(!S.crewCount) S.crewCount = 3;
     showApp();
   } else resetLanding();
 }
@@ -594,10 +595,10 @@ function buildForm(){
     CHECKS.forEach(([t,d],i) => {
       const row = document.createElement('div');
       row.className = 'chk'; row.id = 'chk'+i;
-      row.innerHTML = '<p><b>'+t+':</b> '+d+'</p>'+
+      row.innerHTML = '<p class="t">'+t+'</p><p class="d">'+d+'</p>'+
         '<div class="seg" role="radiogroup" aria-label="'+t+'">'+
         ['yes','no','na'].map(v => '<input type="radio" name="c'+i+'" id="c'+i+v+'" value="'+v+'"><label for="c'+i+v+'">'+(v==='na'?'N/A':v.toUpperCase())+'</label>').join('')+
-        '</div><div class="cmt hidden" id="cmtw'+i+'"><label for="cmt'+i+'" id="cmtl'+i+'">Comment</label>'+
+        '</div><div class="cmt f hidden" id="cmtw'+i+'"><label for="cmt'+i+'" id="cmtl'+i+'">Comment</label>'+
         '<textarea id="cmt'+i+'" maxlength="400" rows="2"></textarea>'+
         '<div class="hint" id="cmth'+i+'"></div></div>';
       box.appendChild(row);
@@ -611,17 +612,24 @@ function buildForm(){
     const crew = $('crew');
     for(let i=0;i<CREW_ROWS;i++){
       const r = document.createElement('div');
-      r.className = 'crow';
-      r.innerHTML = '<span class="idx">'+(i+1)+'</span>'+
-        '<input class="nm" id="cn'+i+'" placeholder="Name" aria-label="Crew '+(i+1)+' printed name" autocomplete="off">'+
-        '<button type="button" class="sigbox" id="cs'+i+'" aria-label="Crew '+(i+1)+' signature">Tap to sign</button>'+
-        '<input class="tm" type="time" id="ct'+i+'" aria-label="Crew '+(i+1)+' time">';
+      r.className = 'person'; r.id = 'crow'+i;
+      r.innerHTML = '<div class="pn">Crew '+(i+1)+'</div>'+
+        '<div class="row">'+
+          '<div class="f"><label for="cn'+i+'">Printed name</label><input id="cn'+i+'" autocomplete="off" autocapitalize="words"></div>'+
+          '<div class="f"><label for="ct'+i+'">Time</label><input type="time" id="ct'+i+'"></div>'+
+        '</div>'+
+        '<button type="button" class="sigbox" id="cs'+i+'" aria-label="Crew '+(i+1)+' signature">Tap to sign</button>';
       crew.appendChild(r);
       $('cn'+i).addEventListener('input', e => { S.crew[i].name = e.target.value; save(); refresh(); });
       $('ct'+i).addEventListener('input', e => { S.crew[i].time = e.target.value; save(); });
       $('ct'+i).addEventListener('change', e => { S.crew[i].time = e.target.value; save(); });
       $('cs'+i).addEventListener('click', () => openSig(i));
     }
+    $('btnAddCrew').addEventListener('click', () => {
+      if(S.crewCount >= CREW_ROWS) return;
+      S.crewCount++; save(); refresh();
+      $('cn'+(S.crewCount-1)).focus();
+    });
     // simple fields
     document.querySelectorAll('[data-k]').forEach(el => {
       const h = () => { S[el.dataset.k] = el.value; save(); refresh(); };
@@ -690,21 +698,48 @@ function refresh(){
     }
   });
   $('hdrSub').textContent = isoToNZ(S.date) + (S.siteName ? ', '+S.siteName : '');
+  // crew rows shown: at least 3, and never hide a row that has something in it
+  let used = 0; S.crew.forEach((c,i) => { if((c.name||'').trim() || c.signature || c.time) used = i+1; });
+  S.crewCount = Math.min(CREW_ROWS, Math.max(S.crewCount||3, used, 1));
+  for(let i=0;i<CREW_ROWS;i++) $('crow'+i).classList.toggle('hidden', i >= S.crewCount);
+  $('btnAddCrew').classList.toggle('hidden', S.crewCount >= CREW_ROWS);
 
   // non-latin warning (PDF font can only print English letters)
   document.querySelectorAll('.warn-chars').forEach(n => n.remove());
   const flag = (el) => { const w = document.createElement('div'); w.className='warn-chars'; w.textContent='Only English letters print on the PDF. Other characters show as "?".'; el.insertAdjacentElement('afterend', w); };
   document.querySelectorAll('#app .f input:not([type=date]):not([type=time]):not([type=email]), #app .f textarea, .cmt textarea').forEach(el => { if(nonLatin(el.value)) flag(el); });
-  if(S.crew.some(c => nonLatin(c.name))) flag($('crew'));
 
   const p = problems();
   document.querySelectorAll('.bad').forEach(n => n.classList.remove('bad'));
   if(showErrors) p.forEach(x => { const el = $(x.id); if(el){ (el.closest('.f')||el).classList.add('bad'); } });
-  let html = '<b>'+answered+'/'+CHECKS.length+'</b> checks, <b>'+signed+'</b> signed'+(nos? ', <span style="color:var(--stop);font-weight:700">'+nos+' NO</span>':'');
-  if(showErrors && p.length) html += '<span class="errs">'+p.length+' to fix: '+escapeHtml(p[0].msg)+(p.length>1?' and more':'')+'</span>';
-  else if(!p.length) html += '<span style="display:block;color:var(--pen);font-weight:600">Ready to send</span>';
-  $('prog').innerHTML = html;
+  let html = answered+' of '+CHECKS.length+' checks answered, '+signed+' signed'+(nos ? ', <span class="no">'+nos+' answered NO</span>' : '')+'.';
+  if(!p.length) html += '<br><span class="ok">Ready to send.</span>';
+  $('summary').innerHTML = html;
+  const iss = $('issues');
+  if(showErrors && p.length){
+    const shown = listIssues(p);
+    iss.innerHTML = '<p>'+shown.length+' thing'+(shown.length>1?'s':'')+' to fix before sending</p><ul>'+
+      listIssues(p).map(x => '<li><button type="button" data-go="'+x.id+'">'+escapeHtml(x.msg)+'</button></li>').join('')+'</ul>';
+    iss.classList.remove('hidden');
+  } else iss.classList.add('hidden');
 }
+// Group unanswered checks into one line so the list stays short on a phone
+function listIssues(p){
+  const checks = p.filter(x => x.id.startsWith('chk'));
+  const rest = p.filter(x => !x.id.startsWith('chk'));
+  if(!checks.length) return rest;
+  const nums = checks.map(x => +x.id.slice(3)+1);
+  const item = { id: checks[0].id, msg: nums.length===1 ? 'Check '+nums[0]+' not answered' : nums.length+' checks not answered ('+nums.join(', ')+')' };
+  const at = p.indexOf(checks[0]) - 0;
+  const out = rest.slice(); out.splice(p.slice(0,at).filter(x => !x.id.startsWith('chk')).length, 0, item);
+  return out;
+}
+$('issues').addEventListener('click', e => {
+  const id = e.target && e.target.dataset && e.target.dataset.go; if(!id) return;
+  const el = $(id); if(!el) return;
+  el.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth', block:'center'});
+  if(el.focus && el.tagName!=='DIV') el.focus({preventScroll:true});
+});
 function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 function checkReady(){
@@ -723,7 +758,7 @@ const padEl = $('pad');
 function openSig(i){
   if(!(S.crew[i].name||'').trim()){ $('cn'+i).focus(); toast('Type the printed name first'); showErrors = true; refresh(); return; }
   sigRow = i;
-  $('sigWho').textContent = S.crew[i].name.trim()+' — sign with your finger or mouse.';
+  $('sigWho').textContent = S.crew[i].name.trim()+'. Sign with your finger above the line.';
   $('sigModal').classList.remove('hidden');
   strokes = []; sizePad();
   document.body.style.overflow = 'hidden';
@@ -731,7 +766,7 @@ function openSig(i){
 function closeSig(){ $('sigModal').classList.add('hidden'); document.body.style.overflow=''; sigRow=-1; }
 function sizePad(){
   const w = $('padWrap').clientWidth;
-  const h = Math.max(170, Math.round(w/2.6));
+  const h = Math.min(Math.round(window.innerHeight*0.45), Math.max(190, Math.round(w/2.2)));
   dpr = Math.min(window.devicePixelRatio||1, 3);
   padEl.width = Math.round(w*dpr); padEl.height = Math.round(h*dpr);
   padEl.style.height = h+'px';
@@ -806,7 +841,7 @@ function renderTo(){
   const sel = $('f_to'); sel.innerHTML = '';
   const add = (v, t, dis) => { const o = document.createElement('option'); o.value = v; o.textContent = t; if(dis) o.disabled = true; sel.appendChild(o); return o; };
   add('', 'Choose who to send to');
-  allContacts().forEach(c => add(c.email, c.name+'  <'+c.email+'>'));
+  allContacts().forEach(c => add(c.email, c.name));
   add('__add', '+ Add new person…');
   const known = allContacts().some(c => c.email === S.to);
   sel.value = known ? S.to : '';
@@ -816,7 +851,8 @@ function renderTo(){
 function paintTo(){
   const c = allContacts().find(x => x.email === S.to);
   $('btnRemoveTo').classList.toggle('hidden', !(c && c.custom));
-  $('toPicked').textContent = c ? 'The email will go to '+c.name+' ('+c.email+').' : '';
+  $('btnEmail').textContent = c ? 'Email PDF to '+c.name.split(' ')[0] : 'Email PDF';
+  $('toPicked').textContent = c ? c.email : '';
 }
 function onToChange(){
   const v = $('f_to').value;
@@ -896,7 +932,7 @@ $('btnPdf').addEventListener('click', () => {
 
 $('btnEmail').addEventListener('click', () => {
   if(!checkReady()) return;
-  if(!S.to){ $('f_to').scrollIntoView({block:'center'}); $('f_to').focus({preventScroll:true}); $('f_to').classList.add('bad'); toast('Choose who to send the email to'); return; }
+  if(!S.to){ $('f_to').scrollIntoView({block:'center'}); $('f_to').focus({preventScroll:true}); $('f_to').classList.add('bad'); toast('Choose who to send to'); return; }
   const to = S.to;
   withBusy($('btnEmail'), 'Making PDF…', async () => {
     const bytes = await buildPdf();
@@ -922,44 +958,7 @@ $('btnEmail').addEventListener('click', () => {
       title:'Attach the PDF to your email',
       msg:'Saved <b>'+escapeHtml(name)+'</b> for <b>'+escapeHtml(to)+'</b>.',
       help:'Your email app opens with the address, subject and message filled in. Attach the saved PDF before sending.',
-      href, linkText:'Open email', wa:false
-    });
-  });
-});
-
-// ---------- WhatsApp ----------
-function waText(){
-  const names = S.crew.filter(c => c.signature && (c.name||'').trim()).map(c => c.name.trim());
-  const flagged = S.checks.map((v,i) => (v==='no'||v==='na') ? '- '+CHECKS[i][0]+': '+(v==='no'?'NO':'N/A')+(S.comments[i]&&S.comments[i].trim() ? ' ('+S.comments[i].trim()+')' : '') : null).filter(Boolean);
-  return 'Daily Site Prestart\n'+
-    S.siteName+(S.jobNo ? ' (Job '+S.jobNo+')' : '')+'\n'+
-    isoToNZ(S.date)+', start '+hhmmTo12(S.startTime)+'\n'+
-    'Leading hand: '+S.leadingHand+'\n'+
-    'Crew signed: '+names.join(', ')+
-    (flagged.length ? '\n\nNO / N/A:\n'+flagged.join('\n') : '\n\nAll checks YES')+
-    (S.changed==='yes' ? '\n\nChanges: '+S.newHazards+'\nControls: '+S.controls : '');
-}
-$('btnWa').addEventListener('click', () => {
-  if(!checkReady()) return;
-  withBusy($('btnWa'), 'Making PDF…', async () => {
-    const bytes = await buildPdf();
-    const name = fileName();
-    const text = waText();
-    // 1) Phones over https: share sheet, pick WhatsApp, PDF goes as a document
-    let file = null;
-    try{ file = new File([bytes], name, {type:'application/pdf'}); }catch(e){}
-    if(file && navigator.canShare && navigator.canShare({files:[file]})){
-      try{ await navigator.share({ files:[file], text }); toast('Shared'); return; }
-      catch(err){ if(err && err.name==='AbortError') return; }
-    }
-    // 2) Otherwise: save the PDF and open WhatsApp with the summary; the PDF is attached by hand
-    const ok = await savePdfFile(bytes, name);
-    if(!ok) return;
-    openHandoff({
-      title:'Attach the PDF in WhatsApp',
-      msg:'Saved <b>'+escapeHtml(name)+'</b>.',
-      help:'WhatsApp opens with a summary typed in. Pick the chat or group, then attach the saved PDF with the paperclip.',
-      href:'https://wa.me/?text='+encodeURIComponent(text), linkText:'Open WhatsApp', wa:true
+      href, linkText:'Open email'
     });
   });
 });
@@ -970,8 +969,6 @@ function openHandoff(o){
   $('mailHelp').textContent = o.help;
   $('mailLink').href = o.href;
   $('mailLink').textContent = o.linkText;
-  $('mailLink').classList.toggle('btn-wa', !!o.wa);
-  $('mailLink').classList.toggle('btn-primary', !o.wa);
   $('mailModal').classList.remove('hidden');
 }
 $('mailClose').addEventListener('click', () => $('mailModal').classList.add('hidden'));
